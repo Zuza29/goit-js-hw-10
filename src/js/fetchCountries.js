@@ -8,6 +8,3 @@ function fetchCountries(name) {
 export {
     fetchCountries
 };
-// 1. Czy można to zrobić bez użycia async/await?
-// 2. Czemu funkcja fetchCountries jest taka krótka? Bez sensu ją robić od razu bardzo
-// długą i ze skomplikowaną funkcjonalnością?
