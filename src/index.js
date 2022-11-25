@@ -11,7 +11,7 @@ const rollMarkup = document.getElementsByClassName('roll-list');
 const createCountry = country => {
     console.log(countriesList[0]);
     const li = document.createElement('li');
-    li.innerHTML = `<div><img src=${country.flags.svg} /><span class="country-name">${country.name.official}</span></div>`
+    li.innerHTML = `<div class="full-info-container"><img src=${country.flags.svg} /><span class="country-name">${country.name.official}</span><ul><li><span class="country-info">Population: ${country.population}</span></li><li><span class="country-info">Capital city: ${country.capital}</span></li><li><span class="country-info">Languages: ${Object.values(country.languages).join(', ')}</span></li></ul></div>`
     countriesList[0].appendChild(li);
 };
 
@@ -24,10 +24,11 @@ const removeCountry = () => {
 
 const createRollMarkup = (data) => {
     return data.map(({ name, flags }) =>
-        `<li data-name="${name.common}"><img src="${flags.svg}" alt="${name.common}"/>${name.common}</li>`
+        `<a href="http://wikipedia.org/wiki/${name.common}" target="_blank"><li class="list-item" data-name="${name.common}"><img src="${flags.svg}" alt="${name.common}"/>${name.common}</li></a>`
     )
         .join('');
 };
+
 
 const handleInput = async (event) => {
     const response = await fetchCountries(event.target.value && event.target.value.trim());
@@ -40,9 +41,9 @@ const handleInput = async (event) => {
             countries.forEach(country => createCountry(country));
         } else if (countries && countries.length >= 2 && countries.length <= 10) {
             countriesList[0].innerHTML = createRollMarkup(countries);
-            
-            Notiflix.Notify.info('Please select a country from the list');
         }
+    } else if (input.value === '') {
+        removeCountry();
     } else if (response.status === 404) {
         Notiflix.Notify.failure('Oops, there is no country with that name');
     }
