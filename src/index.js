@@ -6,7 +6,6 @@ import Notiflix from 'notiflix';
 const DEBOUNCE_DELAY = 300;
 const input = document.getElementById('search-box');
 const countriesList = document.getElementsByClassName('country-list');
-const rollMarkup = document.getElementsByClassName('roll-list');
 
 const createCountry = country => {
     console.log(countriesList[0]);
@@ -29,25 +28,25 @@ const createRollMarkup = (data) => {
         .join('');
 };
 
-
 const handleInput = async (event) => {
-    const response = await fetchCountries(event.target.value && event.target.value.trim());
-    if (response.status === 200) {
-        const countries = await response.json();
-        if (countries && countries.length > 10) {
-            Notiflix.Notify.info('Too many matches found. Please enter a more specific name');
-        } else if (countries && countries.length === 1) {
-            removeCountry();
-            countries.forEach(country => createCountry(country));
-        } else if (countries && countries.length >= 2 && countries.length <= 10) {
-            countriesList[0].innerHTML = createRollMarkup(countries);
-        }
-    } else if (input.value === '') {
-        removeCountry();
-    } else if (response.status === 404) {
-        Notiflix.Notify.failure('Oops, there is no country with that name');
-    }
 
+    if (event.target.value.trim() && event.target.value !== '') {
+        const response = await fetchCountries(event.target.value);
+        if (response.status === 200) {
+            const countries = await response.json();
+            if (countries && countries.length > 10) {
+                Notiflix.Notify.info('Too many matches found. Please enter a more specific name');
+            } else if (countries && countries.length === 1) {
+                removeCountry();
+                countries.forEach(country => createCountry(country));
+            } else if (countries && countries.length >= 2 && countries.length <= 10) {
+                countriesList[0].innerHTML = createRollMarkup(countries);
+            }
+
+        } else if (response.status === 404) {
+            Notiflix.Notify.failure('Oops, there is no country with that name');
+        }
+    } else { removeCountry() }
 }
 
 input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
