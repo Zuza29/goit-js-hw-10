@@ -28,10 +28,10 @@ const createRollMarkup = (data) => {
         .join('');
 };
 
-const handleInput = async (event) => {
-
-    if (event.target.value.trim() && event.target.value !== '') {
-        const response = await fetchCountries(event.target.value);
+const handleInput = async event => {
+    let value = event.target.value.trim();
+    if (value !== '') {
+        const response = await fetchCountries(value);
         if (response.status === 200) {
             const countries = await response.json();
             if (countries && countries.length > 10) {
@@ -42,11 +42,11 @@ const handleInput = async (event) => {
             } else if (countries && countries.length >= 2 && countries.length <= 10) {
                 countriesList[0].innerHTML = createRollMarkup(countries);
             }
-
         } else if (response.status === 404) {
             Notiflix.Notify.failure('Oops, there is no country with that name');
         }
-    } else { removeCountry() }
+    }
+    if (value === '') { removeCountry() }
 }
 
 input.addEventListener('input', debounce(handleInput, DEBOUNCE_DELAY));
